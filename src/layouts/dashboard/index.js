@@ -34,9 +34,51 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import React, { useEffect, useState } from 'react';
+
+  
+
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+
+  const [dashboardInfo, setDashboardInfo] = useState(null);
+  const [todayData, setTodayData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Indica que o carregamento dos dados começou
+    setIsLoading(true);
+
+     // Formata a data para dia-mês-ano
+
+    fetch('https://5000-jvini0166-quickroutinea-uq5d3udfldo.ws-us110.gitpod.io/quick-routine-admin/getDashboardInfo')
+      .then(response => {
+        // Verifica se a resposta não é ok (ex.: 404 ou 500)
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+        return response.json(); // Converte a resposta em JSON
+      })
+      .then(data => {
+        const todayDate = new Date().toISOString().slice(0, 10).split('-').reverse().join('-');
+        const todayData = data[todayDate];
+        console.log(todayData)
+        setDashboardInfo(data)
+        if (todayData) {
+          setTodayData(todayData); // Atualiza o estado com os dados do dia atual
+        } else {
+          throw new Error('No data for today');
+        }
+        setIsLoading(false);
+      })
+      .catch(error => {
+        // Erro durante o fetch ou processamento de dados
+        setError(error.message);
+        setIsLoading(false);
+      });
+  }, []); // O array vazio significa que este efeito só ocorre no montar do componente
 
   return (
     <DashboardLayout>
@@ -63,7 +105,9 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="leaderboard"
                 title="Acessos de hoje"
-                count="2,300"
+                count={
+                  isLoading ? "Carregando..." : todayData?.totalTodayAccess ?? "Erro: Dados indisponíveis"
+                }
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -120,7 +164,7 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Conversões de Hoje"
+                  title="Conversões aos Meses"
                   description={
                     <>
                       (<strong>+15%</strong>) de aumento de conversões.
