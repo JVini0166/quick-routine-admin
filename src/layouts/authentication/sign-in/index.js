@@ -34,7 +34,8 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
+import { useNavigate } from "react-router-dom";
+import Envs from "components/Envs"
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
@@ -42,9 +43,40 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
+  const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const BACKEND_URL = Envs.BACKEND_URL;
+
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Previne o comportamento padrão do formulário
+
+    try {
+      const response = await fetch(BACKEND_URL + '/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: email, password: password }),
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        localStorage.setItem('access_token', data.access_token); // Salva o token no localStorage
+        localStorage.setItem('user_info', JSON.stringify(data.user_info)); // Salva as informações do usuário no localStorage
+        navigate('/dashboard');
+      } else {
+        alert('Falha no login!');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      alert('Erro ao fazer login!');
+    }
+  };
 
   return (
     <BasicLayout image={bgImage}>
@@ -84,10 +116,10 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="E-mail" fullWidth />
+              <MDInput type="text" label="Nome de Usuário" fullWidth onChange={e => setEmail(e.target.value)} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Senha" fullWidth />
+              <MDInput type="password" label="Senha" fullWidth onChange={e => setPassword(e.target.value)} />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -102,7 +134,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" fullWidth onClick={handleSubmit}>
                 entrar
               </MDButton>
             </MDBox>
