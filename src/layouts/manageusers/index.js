@@ -66,7 +66,7 @@ function ManageUsers() {
   
   const handleCreate = () => {
     console.log('Criando usuário:', newUser);
-    const url = 'https://5000-jvini0166-quickroutinef-pqrdl56q5gh.ws-us110.gitpod.io/quick-routine/admin/create-app-user';
+    const url = BACKEND_URL + '/admin/create-app-user';
 
     fetch(url, {
       method: 'POST',
@@ -110,7 +110,7 @@ const handleUpdate = () => {
   console.log('Atualizando usuário:', currentUser);
 
   // Supondo que currentUser contém os campos necessários, como email e new_role
-  const url = 'https://5000-jvini0166-quickroutinef-pqrdl56q5gh.ws-us110.gitpod.io/quick-routine/admin/update-app-user-plan';
+  const url = BACKEND_URL + '/admin/update-app-user-plan';
   const data = {
       email: currentUser.email,
       new_role: currentUser.role
@@ -139,7 +139,7 @@ const handleDelete = () => {
   console.log('Excluindo usuário:', currentUser);
 
   // Supondo que currentUser contém o campo email
-  const url = 'https://5000-jvini0166-quickroutinef-pqrdl56q5gh.ws-us110.gitpod.io/quick-routine/admin/delete-app-user';
+  const url = BACKEND_URL + '/admin/delete-app-user';
   const data = { email: currentUser.email };
 
   fetch(url, {
