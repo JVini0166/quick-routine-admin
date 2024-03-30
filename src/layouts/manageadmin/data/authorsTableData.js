@@ -1,0 +1,66 @@
+import React, { useEffect, useState } from 'react';
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
+import MDAvatar from "components/MDAvatar";
+import MDBadge from "components/MDBadge";
+
+// Simulação de imagens, substitua conforme necessário
+import defaultUserImage from "assets/images/default-user.jpg";
+
+export default function AdminUsersTable() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch('https://5000-jvini0166-quickroutinef-pqrdl56q5gh.ws-us110.gitpod.io/quick-routine/admin/get-admin-users')
+      .then(response => response.json())
+      .then(data => setUsers(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  const Author = ({ image, name, email }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDAvatar src={image || defaultUserImage} name={name} size="sm" />
+      <MDBox ml={2} lineHeight={1}>
+        <MDTypography display="block" variant="button" fontWeight="medium">
+          {name}
+        </MDTypography>
+        <MDTypography variant="caption">{email}</MDTypography>
+      </MDBox>
+    </MDBox>
+  );
+
+  const Job = ({ title }) => (
+    <MDBox lineHeight={1} textAlign="left">
+      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+        {title}
+      </MDTypography>
+    </MDBox>
+  );
+
+  const rows = users.map(user => ({
+    username: <Author image={defaultUserImage} name={`${user.name} ${user.surname}`} email={user.email} />,
+    role: <Job title={user.role} />,
+    status: (
+      <MDBox ml={-1}>
+        <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
+      </MDBox>
+    ),
+    dateCreated: "N/A", // Você precisará adicionar um campo de data na sua API se quiser mostrar datas
+    action: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        Edit
+      </MDTypography>
+    ),
+  }));
+
+  return {
+    columns: [
+      { Header: "usuario", accessor: "username", width: "45%", align: "left" },
+      { Header: "função", accessor: "role", align: "left" },
+      { Header: "status", accessor: "status", align: "center" },
+      { Header: "criado em", accessor: "dateCreated", align: "center" },
+      { Header: "ação", accessor: "action", align: "center" },
+    ],
+    rows: rows,
+  };
+}

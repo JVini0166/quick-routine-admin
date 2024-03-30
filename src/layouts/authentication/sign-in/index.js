@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -51,6 +51,11 @@ function Basic() {
   const BACKEND_URL = Envs.BACKEND_URL;
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  useEffect(() => {
+    localStorage.removeItem('access_token'); // Remove o access_token do LocalStorage
+    localStorage.removeItem('user_info'); // Opcional: remove user_info do LocalStorage se necessário
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Previne o comportamento padrão do formulário
