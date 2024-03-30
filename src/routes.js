@@ -45,6 +45,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import ManageAdmin from "layouts/manageadmin"
+import ManageUsers from "layouts/manageusers";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -64,6 +65,14 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/manage-admin",
     component: <ManageAdmin />,
+  },
+  {
+    type: "collapse",
+    name: "Gerenciar Usuários",
+    key: "gerenciarusuarios",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/manage-users",
+    component: <ManageUsers />,
   },
   {
     type: "collapse",

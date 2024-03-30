@@ -28,8 +28,8 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/manageadmin/data/authorsTableData";
-import projectsTableData from "layouts/manageadmin/data/projectsTableData";
+import authorsTableData from "layouts/manageusers/data/authorsTableData";
+import projectsTableData from "layouts/manageusers/data/projectsTableData";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -44,7 +44,7 @@ import React, { useEffect, useState } from 'react';
 import Envs from 'components/Envs'
 
 
-function ManageAdmin() {
+function ManageUsers() {
   const { columns, rows: originalRows } = authorsTableData();
   const [open, setOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
@@ -221,7 +221,7 @@ const handleDelete = () => {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Usuários do Admin
+                  Usuários do App
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -375,4 +375,4 @@ const handleDelete = () => {
   );
 }
 
-export default ManageAdmin;
+export default ManageUsers;
