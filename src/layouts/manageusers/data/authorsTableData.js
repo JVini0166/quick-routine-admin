@@ -17,7 +17,7 @@ export default function AdminUsersTable() {
 
   useEffect(() => {
   setIsLoading(true); // Inicia o carregamento
-  fetch(BACKEND_URL + '/admin/get-admin-users')
+  fetch('https://5000-jvini0166-quickroutinef-pqrdl56q5gh.ws-us110.gitpod.io/quick-routine/admin/get-app-users')
     .then(response => response.json())
     .then(data => {
       setUsers(data);
@@ -52,7 +52,7 @@ export default function AdminUsersTable() {
 
   const rows = users.map(user => ({
     username: <Author image={defaultUserImage} name={`${user.name} ${user.surname}`} email={user.email} />,
-    role: <Job title={user.role} />,
+    role: <Job title={user.plan} />,
     status: (
       <MDBox ml={-1}>
         <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
@@ -69,7 +69,7 @@ export default function AdminUsersTable() {
   return {
     columns: [
       { Header: "usuario", accessor: "username", width: "45%", align: "left" },
-      { Header: "função", accessor: "role", align: "left" },
+      { Header: "plano", accessor: "role", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
       { Header: "criado em", accessor: "dateCreated", align: "center" },
       { Header: "ação", accessor: "action", align: "center" },
