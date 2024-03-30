@@ -17,7 +17,7 @@ export default function AdminUsersTable() {
 
   useEffect(() => {
   setIsLoading(true); // Inicia o carregamento
-  fetch('https://5000-jvini0166-quickroutinef-pqrdl56q5gh.ws-us110.gitpod.io/quick-routine/admin/get-app-users')
+  fetch(BACKEND_URL + '/admin/get-app-users')
     .then(response => response.json())
     .then(data => {
       setUsers(data);

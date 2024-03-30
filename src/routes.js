@@ -48,7 +48,7 @@ import ManageAdmin from "layouts/manageadmin"
 import ManageUsers from "layouts/manageusers";
 // @mui icons
 import Icon from "@mui/material/Icon";
-
+import Faturamento from "layouts/faturamento"
 const routes = [
   {
     type: "collapse",
@@ -76,20 +76,28 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Faturamento",
+    key: "faturamento",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/billing",
+    component: <Faturamento />,
+  },
+  {
+    type: "collapse",
     name: "Tables",
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
     component: <Tables />,
   },
-  {
-    type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Billing",
+  //   key: "billing",
+  //   icon: <Icon fontSize="small">receipt_long</Icon>,
+  //   route: "/billing",
+  //   component: <Billing />,
+  // },
   // {
   //   type: "collapse",
   //   name: "RTL",

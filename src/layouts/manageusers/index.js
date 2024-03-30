@@ -353,7 +353,7 @@ const handleDelete = () => {
                 id="role-create-select"
                 name="role"
                 value={newUser.role}
-                label="Função"
+                label="Plano"
                 onChange={handleChange}
                 sx={{ height: 48 }}
               >
