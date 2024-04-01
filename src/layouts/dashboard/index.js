@@ -28,7 +28,7 @@ import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
+// import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
@@ -43,6 +43,8 @@ function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
 
   const [dashboardData, setDashboardData] = useState(null);
+  const [reportsBarChartData, setReportsBarChartData] = useState({ labels: [], datasets: [] });
+  const [billingChartData, setBillingChartData] = useState({ labels: [], datasets: [] });
   const [todayData, setTodayData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -51,10 +53,35 @@ function Dashboard() {
   
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(BACKEND_URL + '/admin/dashboard');
-        if (!response.ok) throw new Error('A respota não foi 200.');
+        if (!response.ok) throw new Error('A resposta não foi 200.');
         const data = await response.json();
+
+        // Mapeia os dados para as arrays de labels e data
+         // Apenas a primeira letra do dia
+        const datasetData = data.accessPerWeekDay.map(item => item.register_count);
+        
+        setReportsBarChartData({
+          labels: ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+          datasets: { label: "Acessos por dia da semana", data: datasetData }
+        });
+
+        const monthsMap = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+        let revenuePerMonth = Array(12).fill(0); // Inicializa um array com 12 meses
+
+        data.billingPerMonth.forEach(item => {
+          if (item.month && item.total_revenue) {
+            revenuePerMonth[Math.floor(item.month) - 1] += item.total_revenue;
+          }
+        });
+
+        setBillingChartData({
+          labels: monthsMap,
+          datasets: { label: "Faturamento por mês", data: revenuePerMonth }
+        });
+
         setDashboardData(data);
       } catch (error) {
         setError(error.toString());
@@ -64,10 +91,10 @@ function Dashboard() {
     };
 
     fetchData();
-  }, []);
+  }, [BACKEND_URL]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  // if (isLoading) return <div>Loading...</div>;
+  // if (error) return <div>Error: {error}</div>;
 
   return (
     <DashboardLayout>
@@ -164,7 +191,7 @@ function Dashboard() {
                     </>
                   }
                   date="atualizado agora"
-                  chart={sales}
+                  chart={billingChartData}
                 />
               </MDBox>
             </Grid>
