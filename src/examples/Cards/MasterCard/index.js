@@ -69,7 +69,7 @@ function MasterCard({ color, number, holder, expires }) {
           <Icon fontSize="default">wifi</Icon>
         </MDBox>
         <MDTypography variant="h5" color="white" fontWeight="medium" sx={{ mt: 3, mb: 5, pb: 1 }}>
-          {num1}&nbsp;&nbsp;&nbsp;{num2}&nbsp;&nbsp;&nbsp;{num3}&nbsp;&nbsp;&nbsp;{num4}
+          {num1}&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****
         </MDTypography>
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
           <MDBox display="flex" alignItems="center">
