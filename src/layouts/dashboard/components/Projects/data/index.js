@@ -34,6 +34,12 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
+// Images
+import awsLogo from "assets/images/logos/aws.png";
+import googleplayLogo from "assets/images/logos/googleplay.png";
+import stripeLogo from "assets/images/logos/stripe.png";
+
+
 export default function data() {
   const avatars = (members) =>
     members.map(([image, name]) => (
@@ -71,15 +77,15 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "companies", accessor: "companies", width: "45%", align: "left" },
-      { Header: "members", accessor: "members", width: "10%", align: "left" },
-      { Header: "budget", accessor: "budget", align: "center" },
-      { Header: "completion", accessor: "completion", align: "center" },
+      { Header: "companhias", accessor: "companies", width: "45%", align: "left" },
+      { Header: "membros", accessor: "members", width: "10%", align: "left" },
+      { Header: "valor", accessor: "budget", align: "center" },
+      { Header: "meta", accessor: "completion", align: "center" },
     ],
 
     rows: [
       {
-        companies: <Company image={logoXD} name="Material UI XD Version" />,
+        companies: <Company image={awsLogo} name="Amazon AWS Lambda" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -102,7 +108,7 @@ export default function data() {
         ),
       },
       {
-        companies: <Company image={logoAtlassian} name="Add Progress Track" />,
+        companies: <Company image={awsLogo} name="Amazon AWS RDS" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -123,7 +129,7 @@ export default function data() {
         ),
       },
       {
-        companies: <Company image={logoSlack} name="Fix Platform Errors" />,
+        companies: <Company image={stripeLogo} name="Stripe" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -144,7 +150,7 @@ export default function data() {
         ),
       },
       {
-        companies: <Company image={logoSpotify} name="Launch our Mobile App" />,
+        companies: <Company image={logoSpotify} name="Cielo" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -167,7 +173,7 @@ export default function data() {
         ),
       },
       {
-        companies: <Company image={logoJira} name="Add the New Pricing Page" />,
+        companies: <Company image={awsLogo} name="Amazon AWS S3" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([[team4, "Jessica Doe"]])}
@@ -185,7 +191,7 @@ export default function data() {
         ),
       },
       {
-        companies: <Company image={logoInvesion} name="Redesign New Online Shop" />,
+        companies: <Company image={googleplayLogo} name="Google Play" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
