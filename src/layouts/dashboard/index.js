@@ -121,7 +121,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Faturamento"
+                title="Faturamento do mês"
                 count="34k"
                 percentage={{
                   color: "success",
@@ -136,7 +136,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Novos Registros"
+                title="Novos Registros no mês"
                 count="+91"
                 percentage={{
                   color: "success",
@@ -164,7 +164,7 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Conversões aos Meses"
+                  title="Faturamento aos meses"
                   description={
                     <>
                       (<strong>+15%</strong>) de aumento de conversões.
