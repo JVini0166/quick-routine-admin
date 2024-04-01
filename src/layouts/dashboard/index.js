@@ -35,50 +35,39 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import React, { useEffect, useState } from 'react';
-
+import Envs from "components/Envs";
   
 
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
 
-  const [dashboardInfo, setDashboardInfo] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
   const [todayData, setTodayData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const BACKEND_URL = Envs.BACKEND_URL;
+  
   useEffect(() => {
-    // Indica que o carregamento dos dados começou
-    setIsLoading(true);
-
-     // Formata a data para dia-mês-ano
-
-    fetch('https://5000-jvini0166-quickroutinea-uq5d3udfldo.ws-us110.gitpod.io/quick-routine-admin/getDashboardInfo')
-      .then(response => {
-        // Verifica se a resposta não é ok (ex.: 404 ou 500)
-        if (!response.ok) {
-          throw new Error('Failed to fetch');
-        }
-        return response.json(); // Converte a resposta em JSON
-      })
-      .then(data => {
-        const todayDate = new Date().toISOString().slice(0, 10).split('-').reverse().join('-');
-        const todayData = data[todayDate];
-        console.log(todayData)
-        setDashboardInfo(data)
-        if (todayData) {
-          setTodayData(todayData); // Atualiza o estado com os dados do dia atual
-        } else {
-          throw new Error('No data for today');
-        }
+    const fetchData = async () => {
+      try {
+        const response = await fetch(BACKEND_URL + '/admin/dashboard');
+        if (!response.ok) throw new Error('A respota não foi 200.');
+        const data = await response.json();
+        setDashboardData(data);
+      } catch (error) {
+        setError(error.toString());
+      } finally {
         setIsLoading(false);
-      })
-      .catch(error => {
-        // Erro durante o fetch ou processamento de dados
-        setError(error.message);
-        setIsLoading(false);
-      });
-  }, []); // O array vazio significa que este efeito só ocorre no montar do componente
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <DashboardLayout>
@@ -91,11 +80,11 @@ function Dashboard() {
                 color="dark"
                 icon="weekend"
                 title="Ativos no momento"
-                count={281}
+                count={0}
                 percentage={{
                   color: "success",
                   amount: "+55%",
-                  label: "than lask week",
+                  label: "que semana passada",
                 }}
               />
             </MDBox>
@@ -106,12 +95,12 @@ function Dashboard() {
                 icon="leaderboard"
                 title="Acessos de hoje"
                 count={
-                  isLoading ? "Carregando..." : todayData?.totalTodayAccess ?? "Erro: Dados indisponíveis"
+                  isLoading ? "Carregando..." : dashboardData?.todayAccessAmount ?? "Carregando..."
                 }
                 percentage={{
                   color: "success",
                   amount: "+3%",
-                  label: "than last month",
+                  label: "que o mês passado",
                 }}
               />
             </MDBox>
@@ -122,11 +111,13 @@ function Dashboard() {
                 color="success"
                 icon="store"
                 title="Faturamento do mês"
-                count="34k"
+                count={
+                  isLoading ? "Carregando..." : dashboardData?.monthBilling + " R$" ?? "Carregando..."
+                }
                 percentage={{
                   color: "success",
                   amount: "+1%",
-                  label: "than yesterday",
+                  label: "mais que ontem",
                 }}
               />
             </MDBox>
@@ -137,11 +128,13 @@ function Dashboard() {
                 color="primary"
                 icon="person_add"
                 title="Novos Registros no mês"
-                count="+91"
+                count={
+                  isLoading ? "Carregando..." : dashboardData?.monthNewRegister ?? "Carregando..."
+                }
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: "Just updated",
+                  label: "Atualizado agora",
                 }}
               />
             </MDBox>
@@ -155,7 +148,7 @@ function Dashboard() {
                   color="info"
                   title="Acessos por dia de semana"
                   description="Quantidade de acessos por dia da semana."
-                  date="campaign sent 2 days ago"
+                  date="atualizado agora"
                   chart={reportsBarChartData}
                 />
               </MDBox>
@@ -170,7 +163,7 @@ function Dashboard() {
                       (<strong>+15%</strong>) de aumento de conversões.
                     </>
                   }
-                  date="updated 4 min ago"
+                  date="atualizado agora"
                   chart={sales}
                 />
               </MDBox>
@@ -181,7 +174,7 @@ function Dashboard() {
                   color="dark"
                   title="Acessos mensais"
                   description="Quantidade de acessos durante os meses."
-                  date="just updated"
+                  date="atualizado agora"
                   chart={tasks}
                 />
               </MDBox>
