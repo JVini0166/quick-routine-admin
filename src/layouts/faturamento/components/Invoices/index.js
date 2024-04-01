@@ -26,7 +26,7 @@ import Envs from "components/Envs"
 // Billing page components
 import Invoice from "layouts/faturamento/components/Invoice";
 import jsPDF from 'jspdf';
-
+import "jspdf-autotable";
 
 function Invoices() {
 
@@ -65,60 +65,95 @@ function Invoices() {
     let dates = [];
     let currentDate = new Date();
     for (let i = 0; i < 5; i++) {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        dates.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), 5));
+        dates.push(new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 5));
     }
     return dates;
-};
+  };
 
-const invoiceDates = generateDates().map(date => 
-    date.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })
-);
+  const invoiceDates = generateDates().map(date => 
+      date.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })
+  );
 
-function generatePdfReport(billingData, accessData) {
-  const pdf = new jsPDF();
-
-  pdf.setFontSize(18);
-  pdf.text('Relatório Mensal', 20, 20);
-
-  if (accessData) {
-    pdf.setFontSize(14);
-    pdf.text(`Acessos no Mês: ${accessData.register_count}`, 20, 40);
+  function convertDateStringToDate(dateString) {
+    const months = {
+      janeiro: 0, fevereiro: 1, março: 2, abril: 3, maio: 4, junho: 5,
+      julho: 6, agosto: 7, setembro: 8, outubro: 9, novembro: 10, dezembro: 11
+    };
+    const parts = dateString.match(/(\d+)\sde\s(\w+)\sde\s(\d+)/);
+  
+    if (parts && parts.length === 4) {
+      const day = parseInt(parts[1], 10);
+      const month = months[parts[2].toLowerCase()];
+      const year = parseInt(parts[3], 10);
+  
+      return new Date(year, month, day);
+    }
+  
+    throw new Error('Formato de data inválido.');
   }
 
-  pdf.setFontSize(14);
-  pdf.text('Detalhes de Faturamento:', 20, 60);
-
-  let currentHeight = 70;
-  billingData.forEach((item, index) => {
-    pdf.setFontSize(12);
-    pdf.text(`Plano: ${item.plan_name} - Receita: R$ ${item.total_revenue}`, 20, currentHeight);
-    currentHeight += 10;
-  });
-
-  // Salva o PDF
-  pdf.save('relatorio_mensal.pdf');
+  function generatePdfReport(billingData, accessData, monthYearString) {
+    const pdf = new jsPDF();
+  
+    pdf.setFontSize(18);
+    pdf.text('Relatório Mensal', 20, 20);
+    pdf.setFontSize(14);
+    pdf.text(`Mês: ${monthYearString}`, 20, 30); // Adicionando o mês e ano no relatório
+  
+    if (accessData) {
+      pdf.setFontSize(14);
+      pdf.text(`Acessos no Mês: ${accessData.register_count}`, 20, 40);
+    }
+  
+    pdf.setFontSize(14);
+    pdf.text('Detalhes de Faturamento:', 20, 50);
+  
+    // Configurações da tabela
+    const tableColumnNames = ['Plano', 'Receita'];
+    const tableRows = billingData.map(item => [item.plan_name, `R$ ${item.total_revenue}`]);
+  
+    // Adiciona a tabela ao PDF
+    pdf.autoTable({
+        head: [tableColumnNames],
+        body: tableRows,
+        startY: 60, // Ajuste este valor conforme necessário para posicionar a tabela
+        styles: { fontSize: 12, cellPadding: 5, overflow: 'linebreak' },
+        headStyles: { fillColor: [221, 221, 221] }, // Adiciona cor de fundo ao cabeçalho
+    });
+  
+    // Salva o PDF
+    pdf.save('relatorio_mensal.pdf');
 }
 
-function generateReportForDate(dateString) {
-  const selectedMonth = new Date(dateString).getMonth() + 1; // JavaScript months are 0-indexed
-  const selectedYear = new Date(dateString).getFullYear();
   
-  if (!dashboardData) return;
+  function generateReportForDate(dateString) {
+    console.log('Data original:', dateString);
+    const selectedDate = convertDateStringToDate(dateString);
+    const selectedMonth = selectedDate.getMonth() + 1; // JavaScript months are 0-indexed
+    const selectedYear = selectedDate.getFullYear();
+    const monthYearString = `${selectedDate.toLocaleDateString('pt-BR', { month: 'long' })} de ${selectedYear}`;
   
-  const { billingPerMonth, accessPerMonth } = dashboardData;
+    if (!dashboardData) return;
   
-  const billingDataForMonth = billingPerMonth.filter(item => item.month === selectedMonth && item.year === selectedYear);
-  const accessDataForMonth = accessPerMonth.month === selectedMonth && accessPerMonth.year === selectedYear ? accessPerMonth : null;
+    const accessDataForMonth = (dashboardData.accessPerMonth.month === selectedMonth && dashboardData.accessPerMonth.year === selectedYear)
+      ? dashboardData.accessPerMonth
+      : null;
+  
+    const billingDataForMonth = dashboardData.billingPerMonth.filter(item => {
+      const itemMonth = Math.round(item.month);
+      const itemYear = Math.round(item.year);
+      return itemMonth === selectedMonth && itemYear === selectedYear;
+    });
+  
+    console.log('Selected Month:', selectedMonth, 'Selected Year:', selectedYear);
+    console.log('Billing data for month:', billingDataForMonth);
+    console.log('Access data for month:', accessDataForMonth);
+  
+    generatePdfReport(billingDataForMonth, accessDataForMonth, monthYearString);
+  }
 
-  // Agora você pode gerar o PDF com `billingDataForMonth` e `accessDataForMonth`
-  generatePdfReport(billingDataForMonth, accessDataForMonth);
-}
 
-// Atualize a parte onde os Invoice components são renderizados para passar a nova função
-{invoiceDates.map((date, index) => (
-  <Invoice key={index} date={date} id={`#ID-${index}`} price={`R$ ???`} onPdfClick={() => generateReportForDate(date)}/>
-))}
+
 
 return (
   <Card sx={{ height: "100%" }}>
