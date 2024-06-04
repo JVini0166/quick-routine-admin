@@ -26,7 +26,7 @@ function drawBarChart(pdf, labels, data, x, y, width, height) {
   }
 }
 
-async function generatePdfReport(billingData, accessData, monthYearString) {
+async function generatePdfReport(billingData, accessData, stripeDataForMonth, monthYearString) {
   console.log('Gerando relatório para:', monthYearString);
   const pdf = new jsPDF();
 
@@ -40,7 +40,7 @@ async function generatePdfReport(billingData, accessData, monthYearString) {
   pdf.setFontSize(18);
   pdf.text('Resumo Executivo', 20, 60);
   pdf.setFontSize(14);
-  pdf.text('Este relatório apresenta um resumo detalhado do desempenho financeiro da empresa, incluindo dados de faturamento, lucro e custos com serviços AWS.', 20, 70, { maxWidth: 170 });
+  pdf.text('Este relatório apresenta um resumo detalhado do desempenho financeiro da empresa, incluindo dados de faturamento, lucro e custos com serviços AWS e Stripe.', 20, 70, { maxWidth: 170 });
 
   // Faturamento
   pdf.setFontSize(18);
@@ -61,25 +61,135 @@ async function generatePdfReport(billingData, accessData, monthYearString) {
   const profitData = [10000, 12000, 15000, 8000, 5000]; // Dados de exemplo
   drawBarChart(pdf, ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'], profitData, 20, 50, 160, 80);
 
-  // Billing da AWS
+  // Faturamento por Plano
   pdf.addPage();
   pdf.setFontSize(18);
-  pdf.text('Dados de Billing da AWS', 20, 20);
+  pdf.text('Faturamento por Plano', 20, 20);
+
+  const planRevenueData = [
+    { plan: 'Standard', revenue: 'R$ 100,000' },
+    { plan: 'Premium', revenue: 'R$ 100,000' }
+  ];
+
+  const planRevenueTableColumns = ['Plano', 'Faturamento'];
+  const planRevenueTableRows = planRevenueData.map(item => [item.plan, item.revenue]);
+
+  pdf.autoTable({
+    head: [planRevenueTableColumns],
+    body: planRevenueTableRows,
+    startY: 30,
+    styles: { fontSize: 12, cellPadding: 5, overflow: 'linebreak' },
+    headStyles: { fillColor: [221, 221, 221] }
+  });
+
+  // Lucro por Plano
+  pdf.addPage();
+  pdf.setFontSize(18);
+  pdf.text('Lucro por Plano', 20, 20);
+
+  const planProfitData = [
+    { plan: 'Standard', profit: 'R$ 25,000' },
+    { plan: 'Premium', profit: 'R$ 25,000' }
+  ];
+
+  const planProfitTableColumns = ['Plano', 'Lucro'];
+  const planProfitTableRows = planProfitData.map(item => [item.plan, item.profit]);
+
+  pdf.autoTable({
+    head: [planProfitTableColumns],
+    body: planProfitTableRows,
+    startY: 30,
+    styles: { fontSize: 12, cellPadding: 5, overflow: 'linebreak' },
+    headStyles: { fillColor: [221, 221, 221] }
+  });
+
+  // Transações do Mês
+  pdf.addPage();
+  pdf.setFontSize(18);
+  pdf.text('Transações do Mês', 20, 20);
+
+  const transactionData = [
+    { type: 'Repasse', count: 10 },
+    { type: 'Compra Plano Standard', count: 15 },
+    { type: 'Cancelamento Plano Standard', count: 2 },
+    { type: 'Compra Plano Premium', count: 10 },
+    { type: 'Cancelamento Plano Premium', count: 1 },
+    { type: 'Imposto/Taxas', count: 5 }
+  ];
+
+  const transactionTableColumns = ['Tipo de Transação', 'Quantidade'];
+  const transactionTableRows = transactionData.map(item => [item.type, item.count]);
+
+  pdf.autoTable({
+    head: [transactionTableColumns],
+    body: transactionTableRows,
+    startY: 30,
+    styles: { fontSize: 12, cellPadding: 5, overflow: 'linebreak' },
+    headStyles: { fillColor: [221, 221, 221] }
+  });
+
+  // Estatísticas de Usuários
+  pdf.addPage();
+  pdf.setFontSize(18);
+  pdf.text('Estatísticas de Usuários', 20, 20);
+
+  const userStatsData = [
+    { metric: 'Total de Acessos', value: 1000 },
+    { metric: 'Novos Registros', value: 200 }
+  ];
+
+  const userStatsTableColumns = ['Métrica', 'Valor'];
+  const userStatsTableRows = userStatsData.map(item => [item.metric, item.value]);
+
+  pdf.autoTable({
+    head: [userStatsTableColumns],
+    body: userStatsTableRows,
+    startY: 30,
+    styles: { fontSize: 12, cellPadding: 5, overflow: 'linebreak' },
+    headStyles: { fillColor: [221, 221, 221] }
+  });
+
+  // Fatura da AWS
+  pdf.addPage();
+  pdf.setFontSize(18);
+  pdf.text('Fatura da AWS', 20, 20);
 
   const awsBillingData = [
     { service: 'EC2', cost: 'R$ 10,000' },
     { service: 'S3', cost: 'R$ 5,000' },
     { service: 'RDS', cost: 'R$ 7,000' },
     { service: 'Lambda', cost: 'R$ 3,000' },
-    { service: 'CloudFront', cost: 'R$ 2,000' }
+    { service: 'Taxas', cost: 'R$ 2,000' }
   ];
 
-  const awsTableColumnNames = ['Serviço', 'Custo'];
+  const awsTableColumns = ['Serviço', 'Custo'];
   const awsTableRows = awsBillingData.map(item => [item.service, item.cost]);
 
   pdf.autoTable({
-    head: [awsTableColumnNames],
+    head: [awsTableColumns],
     body: awsTableRows,
+    startY: 30,
+    styles: { fontSize: 12, cellPadding: 5, overflow: 'linebreak' },
+    headStyles: { fillColor: [221, 221, 221] }
+  });
+
+  // Dados do Stripe
+  pdf.addPage();
+  pdf.setFontSize(18);
+  pdf.text('Dados do Stripe', 20, 20);
+
+  const stripeData = [
+    { description: 'Faturamento Total', amount: 'R$ 50.000' },
+    { description: 'Total de Transações', amount: 100 },
+    { description: 'Taxas do Stripe', amount: 'R$ 1.500' }
+  ];
+
+  const stripeTableColumns = ['Descrição', 'Valor'];
+  const stripeTableRows = stripeData.map(item => [item.description, item.amount]);
+
+  pdf.autoTable({
+    head: [stripeTableColumns],
+    body: stripeTableRows,
     startY: 30,
     styles: { fontSize: 12, cellPadding: 5, overflow: 'linebreak' },
     headStyles: { fillColor: [221, 221, 221] }
@@ -87,9 +197,9 @@ async function generatePdfReport(billingData, accessData, monthYearString) {
 
   // Assinaturas
   pdf.setFontSize(14);
-  pdf.text('______________________________', 20, 40);
-  pdf.text('Assinatura do Administrador', 20, 50);
-  pdf.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 60);
+  pdf.text('______________________________', 20, 150);
+  pdf.text('Assinatura do Administrador', 20, 160);
+  pdf.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, 170);
 
   // Salva o PDF
   pdf.save('relatorio_empresarial.pdf');
@@ -164,21 +274,28 @@ function Invoices() {
       return;
     }
 
-    const accessDataForMonth = (dashboardData.accessPerMonth.month === selectedMonth && dashboardData.accessPerMonth.year === selectedYear)
+    const accessDataForMonth = (dashboardData.accessPerMonth && dashboardData.accessPerMonth.month === selectedMonth && dashboardData.accessPerMonth.year === selectedYear)
       ? dashboardData.accessPerMonth
       : null;
 
-    const billingDataForMonth = dashboardData.billingPerMonth.filter(item => {
+    const billingDataForMonth = dashboardData.billingPerMonth ? dashboardData.billingPerMonth.filter(item => {
       const itemMonth = Math.round(item.month);
       const itemYear = Math.round(item.year);
       return itemMonth === selectedMonth && itemYear === selectedYear;
-    });
+    }) : [];
+
+    const stripeDataForMonth = dashboardData.stripeData ? dashboardData.stripeData.filter(item => {
+      const itemMonth = Math.round(item.month);
+      const itemYear = Math.round(item.year);
+      return itemMonth === selectedMonth && itemYear === selectedYear;
+    }) : [];
 
     console.log('Selected Month:', selectedMonth, 'Selected Year:', selectedYear);
     console.log('Billing data for month:', billingDataForMonth);
     console.log('Access data for month:', accessDataForMonth);
+    console.log('Stripe data for month:', stripeDataForMonth);
 
-    await generatePdfReport(billingDataForMonth, accessDataForMonth, monthYearString);
+    await generatePdfReport(billingDataForMonth, accessDataForMonth, stripeDataForMonth, monthYearString);
   }
 
   return (

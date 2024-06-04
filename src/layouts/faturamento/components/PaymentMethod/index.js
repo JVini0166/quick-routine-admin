@@ -15,7 +15,7 @@ import MDButton from "components/MDButton";
 
 // Images
 import awsLogo from "assets/images/logos/aws.png";
-import googleplayLogo from "assets/images/logos/googleplay.png";
+import stripeLogo from "assets/images/logos/stripe.png";
 
 // Material Dashboard 2 React context
 import { useMaterialUIController } from "context";
@@ -83,9 +83,9 @@ function PaymentMethod() {
                   `${borderWidth[1]} solid ${borderColor}`,
               }}
             >
-              <MDBox component="img" src={googleplayLogo} alt="Google Play" width="10%" mr={2} />
+              <MDBox component="img" src={stripeLogo} alt="Stripe" width="10%" mr={2} />
               <MDTypography variant="h6" fontWeight="medium">
-                Google Play
+                Stripe
               </MDTypography>
               <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
                 <Tooltip title="Edit Card" placement="top">
@@ -171,14 +171,14 @@ function PaymentMethod() {
           }}
         >
           <MDTypography id="modal-modal-title" variant="h6" component="h2">
-            Editar Google Play
+            Editar Stripe
           </MDTypography>
           <TextField
             margin="normal"
             required
             fullWidth
             id="google-play-key"
-            label="GOOGLE_PLAY_KEY"
+            label="STRIPE_KEY"
             name="google-play-key"
             autoComplete="google-play-key"
             autoFocus
