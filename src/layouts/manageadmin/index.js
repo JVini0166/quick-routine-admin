@@ -195,6 +195,7 @@ const handleDelete = () => {
           onClick={() => handleOpen(row)}
           variant="contained"
           color="primary"
+          style={{color: 'white'}}
         >
           Edit
         </Button>
@@ -282,7 +283,7 @@ const handleDelete = () => {
             </Select>
         </FormControl>
         <Box sx={{ mt: 2 }}>
-          <Button onClick={handleUpdate} color="primary" variant="contained">
+          <Button onClick={handleUpdate} color="primary" variant="contained" style={{color: 'white'}}>
             Atualizar
           </Button>
           <Button onClick={handleDelete} color="error" variant="contained" sx={{ ml: 2 }}>
@@ -293,7 +294,7 @@ const handleDelete = () => {
     </Box>
   </Modal>
   <MDBox pt={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button onClick={handleOpenCreate} color="primary" variant="contained">
+        <Button onClick={handleOpenCreate} color="primary" variant="contained" style={{color: 'white'}}>
           Criar Usuário
         </Button>
       </MDBox>

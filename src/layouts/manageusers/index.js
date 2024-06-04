@@ -195,6 +195,7 @@ const handleDelete = () => {
           onClick={() => handleOpen(row)}
           variant="contained"
           color="primary"
+          style={{color: 'white'}}
         >
           Edit
         </Button>
@@ -229,7 +230,7 @@ const handleDelete = () => {
                   table={{ columns, rows }}
                   isSorted={false}
                   entriesPerPage={false}
-                  showTotalEntries={false}
+                  showTotalEntries={true}
                   noEndBorder
                 />
               </MDBox>
@@ -293,7 +294,7 @@ const handleDelete = () => {
     </Box>
   </Modal>
   <MDBox pt={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button onClick={handleOpenCreate} color="primary" variant="contained">
+        <Button onClick={handleOpenCreate} color="primary" variant="contained" style={{color: 'white'}}>
           Criar Usuário
         </Button>
       </MDBox>

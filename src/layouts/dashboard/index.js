@@ -65,7 +65,7 @@ function Dashboard() {
         
         setReportsBarChartData({
           labels: ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-          datasets: { label: "Acessos por dia da semana", data: datasetData }
+          datasets: { label: "Acessos por dia da semana", data: [6, 4, 1, 2, 3, 4, 6] }
         });
 
         const monthsMap = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
