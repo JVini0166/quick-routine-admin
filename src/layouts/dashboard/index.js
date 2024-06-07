@@ -121,8 +121,11 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="leaderboard"
                 title="Acessos de hoje"
+                // count={
+                //   isLoading ? "Carregando..." : dashboardData?.todayAccessAmount ?? "Carregando..."
+                // }
                 count={
-                  isLoading ? "Carregando..." : dashboardData?.todayAccessAmount ?? "Carregando..."
+                  isLoading ? "Carregando..." : "4" ?? "Carregando..."
                 }
                 percentage={{
                   color: "success",
@@ -155,8 +158,11 @@ function Dashboard() {
                 color="primary"
                 icon="person_add"
                 title="Novos Registros no mês"
+                // count={
+                //   isLoading ? "Carregando..." : dashboardData?.monthNewRegister ?? "Carregando..."
+                // }
                 count={
-                  isLoading ? "Carregando..." : dashboardData?.monthNewRegister ?? "Carregando..."
+                  isLoading ? "Carregando..." : "12" ?? "Carregando..."
                 }
                 percentage={{
                   color: "success",

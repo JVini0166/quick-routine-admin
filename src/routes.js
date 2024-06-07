@@ -140,6 +140,13 @@ const routes = [
   // },
   {
     type: "collapse",
+    name: "Manual do Usuário",
+    key: "manual-do-usuario",
+    icon: <Icon fontSize="small">person</Icon>,
+    href: "https://www.youtube.com/watch?v=Kj12RGlayRk",
+  },
+  {
+    type: "collapse",
     name: "Deslogar",
     key: "log-off",
     icon: <Icon fontSize="small">assignment</Icon>,

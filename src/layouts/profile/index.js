@@ -68,9 +68,9 @@ function Overview() {
                 title="Informações do Perfil"
                 description="Perfil de Administrador com capacidades de administração."
                 info={{
-                  fullName: "José Vinícius",
+                  fullName: "Admin",
                   mobile: "(12) 98282-9224",
-                  email: "joseviniciusgtx@hotmail.com",
+                  email: "admin@admin.com",
                   location: "Brasil",
                 }}
                 social={[
@@ -95,9 +95,9 @@ function Overview() {
               />
               <Divider orientation="vertical" sx={{ mx: 0 }} />
             </Grid>
-            <Grid item xs={12} xl={4}>
+            {/* <Grid item xs={12} xl={4}>
               <ProfilesList title="Conversas" profiles={profilesListData} shadow={false} />
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
         {/* <MDBox pt={2} px={2} lineHeight={1.25}>

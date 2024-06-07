@@ -39,10 +39,6 @@ function PaymentMethod() {
         <MDTypography variant="h6" fontWeight="medium">
           Gerenciar Integrações
         </MDTypography>
-        <MDButton variant="gradient" color="dark">
-          <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-          &nbsp;adicionar integração
-        </MDButton>
       </MDBox>
       <MDBox p={2}>
         <Grid container spacing={3}>

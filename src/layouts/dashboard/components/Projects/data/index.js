@@ -78,7 +78,7 @@ export default function data() {
   return {
     columns: [
       { Header: "companhias", accessor: "companies", width: "45%", align: "left" },
-      { Header: "membros", accessor: "members", width: "10%", align: "left" },
+      // { Header: "membros", accessor: "members", width: "10%", align: "left" },
       { Header: "valor", accessor: "budget", align: "center" },
       { Header: "meta", accessor: "completion", align: "center" },
     ],
@@ -98,7 +98,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $14,000
+            R$45,70
           </MDTypography>
         ),
         completion: (
@@ -119,7 +119,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $3,000
+            R$21,70
           </MDTypography>
         ),
         completion: (
@@ -150,7 +150,7 @@ export default function data() {
         ),
       },
       {
-        companies: <Company image={logoSpotify} name="Cielo" />,
+        companies: <Company image={stripeLogo} name="Stripe Taxas" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -163,7 +163,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $20,500
+            R$10,72
           </MDTypography>
         ),
         completion: (
@@ -181,7 +181,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
+            R$1,20
           </MDTypography>
         ),
         completion: (
@@ -202,7 +202,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $2,000
+            R$3,70
           </MDTypography>
         ),
         completion: (

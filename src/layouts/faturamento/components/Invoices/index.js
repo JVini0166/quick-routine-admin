@@ -46,9 +46,9 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.setFontSize(18);
   pdf.text('Faturamento', 20, 90);
   pdf.setFontSize(14);
-  pdf.text(`O faturamento total no mês de ${monthYearString} foi de R$ 200,000.`, 20, 100);
+  pdf.text(`O faturamento total no mês de ${monthYearString} foi de R$ 79,90.`, 20, 100);
 
-  const revenueData = [40000, 35000, 50000, 45000, 30000]; // Dados de exemplo
+  const revenueData = [0, 39, 12, 9, 9]; // Dados de exemplo
   drawBarChart(pdf, ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'], revenueData, 20, 130, 160, 80);
 
   // Lucro
@@ -56,9 +56,9 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.setFontSize(18);
   pdf.text('Lucro', 20, 20);
   pdf.setFontSize(14);
-  pdf.text(`O lucro total no mês de ${monthYearString} foi de R$ 50,000.`, 20, 30);
+  pdf.text(`O lucro total no mês de ${monthYearString} foi de R$ 22,22.`, 20, 30);
 
-  const profitData = [10000, 12000, 15000, 8000, 5000]; // Dados de exemplo
+  const profitData = [0, 14, 4, 2, 2]; // Dados de exemplo
   drawBarChart(pdf, ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'], profitData, 20, 50, 160, 80);
 
   // Faturamento por Plano
@@ -67,8 +67,8 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Faturamento por Plano', 20, 20);
 
   const planRevenueData = [
-    { plan: 'Standard', revenue: 'R$ 100,000' },
-    { plan: 'Premium', revenue: 'R$ 100,000' }
+    { plan: 'Standard', revenue: 'R$ 39,90' },
+    { plan: 'Premium', revenue: 'R$ 0' }
   ];
 
   const planRevenueTableColumns = ['Plano', 'Faturamento'];
@@ -88,8 +88,8 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Lucro por Plano', 20, 20);
 
   const planProfitData = [
-    { plan: 'Standard', profit: 'R$ 25,000' },
-    { plan: 'Premium', profit: 'R$ 25,000' }
+    { plan: 'Standard', profit: 'R$ 15,90' },
+    { plan: 'Premium', profit: 'R$ 0' }
   ];
 
   const planProfitTableColumns = ['Plano', 'Lucro'];
@@ -134,8 +134,8 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Estatísticas de Usuários', 20, 20);
 
   const userStatsData = [
-    { metric: 'Total de Acessos', value: 1000 },
-    { metric: 'Novos Registros', value: 200 }
+    { metric: 'Total de Acessos', value: 235 },
+    { metric: 'Novos Registros', value: 12 }
   ];
 
   const userStatsTableColumns = ['Métrica', 'Valor'];
@@ -155,11 +155,11 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Fatura da AWS', 20, 20);
 
   const awsBillingData = [
-    { service: 'EC2', cost: 'R$ 10,000' },
-    { service: 'S3', cost: 'R$ 5,000' },
-    { service: 'RDS', cost: 'R$ 7,000' },
-    { service: 'Lambda', cost: 'R$ 3,000' },
-    { service: 'Taxas', cost: 'R$ 2,000' }
+    { service: 'EC2', cost: 'R$ 45,70' },
+    { service: 'S3', cost: 'R$ 1,20' },
+    { service: 'RDS', cost: 'R$ 21,70' },
+    { service: 'Lambda', cost: 'R$ 45,70' },
+    { service: 'Taxas', cost: 'R$ 0' }
   ];
 
   const awsTableColumns = ['Serviço', 'Custo'];
@@ -179,9 +179,9 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Dados do Stripe', 20, 20);
 
   const stripeData = [
-    { description: 'Faturamento Total', amount: 'R$ 50.000' },
+    { description: 'Faturamento Total', amount: 'R$ 255,77' },
     { description: 'Total de Transações', amount: 100 },
-    { description: 'Taxas do Stripe', amount: 'R$ 1.500' }
+    { description: 'Taxas do Stripe', amount: 'R$ 10,72' }
   ];
 
   const stripeTableColumns = ['Descrição', 'Valor'];

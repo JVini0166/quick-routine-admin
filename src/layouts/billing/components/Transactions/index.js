@@ -62,14 +62,14 @@ function Transactions() {
             color="error"
             icon="expand_more"
             name="Netflix"
-            description="27 March 2020, at 12:30 PM"
+            description="04 Jun 2024"
             value="- $ 2,500"
           />
           <Transaction
             color="success"
             icon="expand_less"
             name="Apple"
-            description="27 March 2020, at 04:30 AM"
+            description="04 Jun 2024"
             value="+ $ 2,000"
           />
         </MDBox>

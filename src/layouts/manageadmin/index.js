@@ -139,7 +139,7 @@ const handleDelete = () => {
   console.log('Excluindo usuário:', currentUser);
 
   // Supondo que currentUser contém o campo email
-  const url = BACKEND_URL+ '/admin/delete-user';
+  const url = BACKEND_URL+ '/admin/delete-app-user';
   const data = { email: currentUser.email };
 
   fetch(url, {

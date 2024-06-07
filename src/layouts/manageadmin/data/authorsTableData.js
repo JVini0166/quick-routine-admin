@@ -70,7 +70,7 @@ export default function AdminUsersTable() {
     columns: [
       { Header: "usuario", accessor: "username", width: "45%", align: "left" },
       { Header: "função", accessor: "role", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
+      // { Header: "status", accessor: "status", align: "center" },
       { Header: "criado em", accessor: "dateCreated", align: "center" },
       { Header: "ação", accessor: "action", align: "center" },
     ],

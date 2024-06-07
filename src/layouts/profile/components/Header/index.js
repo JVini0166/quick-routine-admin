@@ -108,7 +108,7 @@ function Header({ children }) {
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
             <AppBar position="static">
-              <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
+              {/* <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
                   label="App"
                   icon={
@@ -133,7 +133,7 @@ function Header({ children }) {
                     </Icon>
                   }
                 />
-              </Tabs>
+              </Tabs> */}
             </AppBar>
           </Grid>
         </Grid>
