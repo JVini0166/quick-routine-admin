@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -41,8 +26,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import React, { useEffect, useState } from 'react';
 
-import Envs from 'components/Envs'
-
+import Envs from 'components/Envs';
 
 function ManageAdmin() {
   const { columns, rows: originalRows } = authorsTableData();
@@ -61,7 +45,17 @@ function ManageAdmin() {
     role: ''
   });
 
-  const handleOpenCreate = () => setOpenCreate(true);
+  const [permissionError, setPermissionError] = useState(false);
+
+  const handleOpenCreate = () => {
+    const userInfo = JSON.parse(localStorage.getItem('user_info'));
+    if (userInfo.role === 'operator' || userInfo.role === 'viewer') {
+      setPermissionError(true);
+    } else {
+      setOpenCreate(true);
+    }
+  };
+
   const handleCloseCreate = () => setOpenCreate(false);
 
   const handleCreate = () => {
@@ -71,18 +65,18 @@ function ManageAdmin() {
     fetch(url, {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(newUser),
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Sucesso na criação:', data);
-      handleCloseCreate();
-    })
-    .catch((error) => {
-      console.error('Erro na criação:', error);
-    });
+      .then(response => response.json())
+      .then(data => {
+        console.log('Sucesso na criação:', data);
+        handleCloseCreate();
+      })
+      .catch((error) => {
+        console.error('Erro na criação:', error);
+      });
   };
 
   // Função para atualizar os campos do novo usuário
@@ -96,73 +90,79 @@ function ManageAdmin() {
 
   const BACKEND_URL = Envs.BACKEND_URL;
 
-
   const handleOpen = (user) => {
-    setCurrentUser({
+    const userInfo = JSON.parse(localStorage.getItem('user_info'));
+    if (userInfo.role === 'operator' || userInfo.role === 'viewer') {
+      setPermissionError(true);
+    } else {
+      setCurrentUser({
         name: user.username.props.name,
         email: user.username.props.email,
         role: user.role.props.title
-    });
-    setOpen(true);
-};
-
-const handleUpdate = () => {
-  console.log('Atualizando usuário:', currentUser);
-
-  // Supondo que currentUser contém os campos necessários, como email e new_role
-  const url = BACKEND_URL+ '/admin/update-user-role';
-  const data = {
-      email: currentUser.email,
-      new_role: currentUser.role
+      });
+      setOpen(true);
+    }
   };
 
-  fetch(url, {
+  const handleUpdate = () => {
+    console.log('Atualizando usuário:', currentUser);
+
+    const url = BACKEND_URL + '/admin/update-user-role';
+    const data = {
+      email: currentUser.email,
+      new_role: currentUser.role
+    };
+
+    fetch(url, {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-  })
-  .then(response => response.json())
-  .then(data => {
-      console.log('Sucesso na atualização:', data);
-  })
-  .catch((error) => {
-      console.error('Erro na atualização:', error);
-  })
-  .finally(() => {
-      handleClose();
-  });
-};
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Sucesso na atualização:', data);
+      })
+      .catch((error) => {
+        console.error('Erro na atualização:', error);
+      })
+      .finally(() => {
+        handleClose();
+      });
+  };
 
-const handleDelete = () => {
-  console.log('Excluindo usuário:', currentUser);
+  const handleDelete = () => {
+    console.log('Excluindo usuário:', currentUser);
 
-  // Supondo que currentUser contém o campo email
-  const url = BACKEND_URL+ '/admin/delete-app-user';
-  const data = { email: currentUser.email };
+    const url = BACKEND_URL + '/admin/delete-app-user';
+    const data = { email: currentUser.email };
 
-  fetch(url, {
+    fetch(url, {
       method: 'DELETE',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-  })
-  .then(response => response.json())
-  .then(data => {
-      console.log('Sucesso na exclusão:', data);
-  })
-  .catch((error) => {
-      console.error('Erro na exclusão:', error);
-  })
-  .finally(() => {
-      handleClose();
-  });
-};
-  
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Sucesso na exclusão:', data);
+      })
+      .catch((error) => {
+        console.error('Erro na exclusão:', error);
+      })
+      .finally(() => {
+        handleClose();
+      });
+  };
+
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleClosePermissionError = () => {
+    setPermissionError(false);
   };
 
   // Mapeamento dos valores para rótulos
@@ -174,7 +174,7 @@ const handleDelete = () => {
 
   // Função para obter a chave do mapeamento pelo valor
   const getKeyByValue = (object, value) => Object.keys(object).find(key => object[key] === value);
-  
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -195,7 +195,7 @@ const handleDelete = () => {
           onClick={() => handleOpen(row)}
           variant="contained"
           color="primary"
-          style={{color: 'white'}}
+          style={{ color: 'white' }}
         >
           Edit
         </Button>
@@ -238,63 +238,62 @@ const handleDelete = () => {
           </Grid>
           <Grid item xs={12}>
             <Card>
-  
-            
+
             </Card>
           </Grid>
         </Grid>
       </MDBox>
       <Modal
-    open={open}
-    onClose={handleClose}
-    aria-labelledby="modal-title"
-    aria-describedby="modal-description"
-  >
-    <Box sx={style}>
-      <h2 id="modal-title">Editar Role</h2>
-      <form>
-        <TextField
-          label="Name"
-          value={currentUser.name || ''}
-          margin="normal"
-          fullWidth
-          disabled
-        />
-        <TextField
-          label="Email"
-          value={currentUser.email || ''}
-          margin="normal"
-          fullWidth
-          disabled
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="role-select-label">Função</InputLabel>
-          <Select
-              labelId="role-select-label"
-              id="role-select"
-              value={roleMapping[currentUser.role] || ''}
-              label="Função"
-              onChange={(e) => setCurrentUser({ ...currentUser, role: getKeyByValue(roleMapping, e.target.value) })}
-              sx={{ height: 48 }}
-            >
-              {Object.entries(roleMapping).map(([key, value]) => (
-                <MenuItem key={key} value={value}>{value}</MenuItem>
-              ))}
-            </Select>
-        </FormControl>
-        <Box sx={{ mt: 2 }}>
-          <Button onClick={handleUpdate} color="primary" variant="contained" style={{color: 'white'}}>
-            Atualizar
-          </Button>
-          <Button onClick={handleDelete} color="error" variant="contained" sx={{ ml: 2 }}>
-            Excluir
-          </Button>
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box sx={style}>
+          <h2 id="modal-title">Editar Role</h2>
+          <form>
+            <TextField
+              label="Name"
+              value={currentUser.name || ''}
+              margin="normal"
+              fullWidth
+              disabled
+            />
+            <TextField
+              label="Email"
+              value={currentUser.email || ''}
+              margin="normal"
+              fullWidth
+              disabled
+            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="role-select-label">Função</InputLabel>
+              <Select
+                labelId="role-select-label"
+                id="role-select"
+                value={roleMapping[currentUser.role] || ''}
+                label="Função"
+                onChange={(e) => setCurrentUser({ ...currentUser, role: getKeyByValue(roleMapping, e.target.value) })}
+                sx={{ height: 48 }}
+              >
+                {Object.entries(roleMapping).map(([key, value]) => (
+                  <MenuItem key={key} value={value}>{value}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Box sx={{ mt: 2 }}>
+              <Button onClick={handleUpdate} color="primary" variant="contained" style={{ color: 'white' }}>
+                Atualizar
+              </Button>
+              <Button onClick={handleDelete} color="error" variant="contained" sx={{ ml: 2 }}>
+                Excluir
+              </Button>
+            </Box>
+          </form>
         </Box>
-      </form>
-    </Box>
-  </Modal>
-  <MDBox pt={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button onClick={handleOpenCreate} color="primary" variant="contained" style={{color: 'white'}}>
+      </Modal>
+      <MDBox pt={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button onClick={handleOpenCreate} color="primary" variant="contained" style={{ color: 'white' }}>
           Criar Usuário
         </Button>
       </MDBox>
@@ -369,6 +368,21 @@ const handleDelete = () => {
               </Button>
             </Box>
           </form>
+        </Box>
+      </Modal>
+      <Modal
+        open={permissionError}
+        onClose={handleClosePermissionError}
+        aria-labelledby="modal-permission-error-title"
+      >
+        <Box sx={style}>
+          <h2 id="modal-permission-error-title">Permissão Insuficiente</h2>
+          <p>Você não tem permissão suficiente para realizar esta ação.</p>
+          <Box sx={{ mt: 2 }}>
+            <Button onClick={handleClosePermissionError} color="primary" variant="contained">
+              Fechar
+            </Button>
+          </Box>
         </Box>
       </Modal>
       <Footer />
