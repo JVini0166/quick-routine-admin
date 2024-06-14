@@ -40,7 +40,7 @@ function Transactions() {
             </Icon>
           </MDBox>
           <MDTypography variant="button" color="text" fontWeight="regular">
-            23 - 30 March 2020
+            01 - 30 Junho 2024
           </MDTypography>
         </MDBox>
       </MDBox>
