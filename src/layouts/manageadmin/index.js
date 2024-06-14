@@ -135,7 +135,7 @@ function ManageAdmin() {
   const handleDelete = () => {
     console.log('Excluindo usuário:', currentUser);
 
-    const url = BACKEND_URL + '/admin/delete-app-user';
+    const url = BACKEND_URL + '/admin/delete-admin-user';
     const data = { email: currentUser.email };
 
     fetch(url, {
