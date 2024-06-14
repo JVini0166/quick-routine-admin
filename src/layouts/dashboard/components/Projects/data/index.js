@@ -191,7 +191,7 @@ export default function data() {
         ),
       },
       {
-        companies: <Company image={googleplayLogo} name="Google Play" />,
+        companies: <Company image={awsLogo} name="Amazon AWS EC2" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([

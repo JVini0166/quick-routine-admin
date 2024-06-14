@@ -1,5 +1,4 @@
-// @mui material components
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
@@ -24,14 +23,48 @@ function PaymentMethod() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
-  // States for modals
+  // States for modals and inputs
   const [openAWS, setOpenAWS] = useState(false);
+  const [awsAccessKeyId, setAwsAccessKeyId] = useState("");
+  const [awsSecretKey, setAwsSecretKey] = useState("");
+
+  const [openStripe, setOpenStripe] = useState(false);
+  const [stripeKey, setStripeKey] = useState("");
+
+  // Handlers for opening and closing modals
   const handleOpenAWS = () => setOpenAWS(true);
   const handleCloseAWS = () => setOpenAWS(false);
 
-  const [openGooglePlay, setOpenGooglePlay] = useState(false);
-  const handleOpenGooglePlay = () => setOpenGooglePlay(true);
-  const handleCloseGooglePlay = () => setOpenGooglePlay(false);
+  const handleOpenStripe = () => setOpenStripe(true);
+  const handleCloseStripe = () => setOpenStripe(false);
+
+  // Save AWS data to local storage
+  const handleSaveAWS = () => {
+    localStorage.setItem("awsAccessKeyId", awsAccessKeyId);
+    localStorage.setItem("awsSecretKey", awsSecretKey);
+    handleCloseAWS();
+  };
+
+  // Save Stripe data to local storage
+  const handleSaveStripe = () => {
+    localStorage.setItem("stripeKey", stripeKey);
+    handleCloseStripe();
+  };
+
+  // Load AWS data from local storage
+  useEffect(() => {
+    if (openAWS) {
+      setAwsAccessKeyId(localStorage.getItem("awsAccessKeyId") || "");
+      setAwsSecretKey(localStorage.getItem("awsSecretKey") || "");
+    }
+  }, [openAWS]);
+
+  // Load Stripe data from local storage
+  useEffect(() => {
+    if (openStripe) {
+      setStripeKey(localStorage.getItem("stripeKey") || "");
+    }
+  }, [openStripe]);
 
   return (
     <Card id="delete-account">
@@ -85,7 +118,7 @@ function PaymentMethod() {
               </MDTypography>
               <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
                 <Tooltip title="Edit Card" placement="top">
-                  <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={handleOpenGooglePlay}>
+                  <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={handleOpenStripe}>
                     edit
                   </Icon>
                 </Tooltip>
@@ -127,6 +160,8 @@ function PaymentMethod() {
             name="aws-access-key-id"
             autoComplete="aws-access-key-id"
             autoFocus
+            value={awsAccessKeyId}
+            onChange={(e) => setAwsAccessKeyId(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -137,19 +172,21 @@ function PaymentMethod() {
             type="password"
             id="aws-access-secret-key"
             autoComplete="aws-access-secret-key"
+            value={awsSecretKey}
+            onChange={(e) => setAwsSecretKey(e.target.value)}
           />
           <MDBox mt={2}>
-            <MDButton variant="gradient" color="dark" onClick={handleCloseAWS}>
+            <MDButton variant="gradient" color="dark" onClick={handleSaveAWS}>
               Salvar
             </MDButton>
           </MDBox>
         </Box>
       </Modal>
 
-      {/* Modal Google Play */}
+      {/* Modal Stripe */}
       <Modal
-        open={openGooglePlay}
-        onClose={handleCloseGooglePlay}
+        open={openStripe}
+        onClose={handleCloseStripe}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -173,14 +210,16 @@ function PaymentMethod() {
             margin="normal"
             required
             fullWidth
-            id="google-play-key"
+            id="stripe-key"
             label="STRIPE_KEY"
-            name="google-play-key"
-            autoComplete="google-play-key"
+            name="stripe-key"
+            autoComplete="stripe-key"
             autoFocus
+            value={stripeKey}
+            onChange={(e) => setStripeKey(e.target.value)}
           />
           <MDBox mt={2}>
-            <MDButton variant="gradient" color="dark" onClick={handleCloseGooglePlay}>
+            <MDButton variant="gradient" color="dark" onClick={handleSaveStripe}>
               Salvar
             </MDButton>
           </MDBox>

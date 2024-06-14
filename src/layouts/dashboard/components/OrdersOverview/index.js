@@ -47,7 +47,7 @@ function OrdersOverview() {
       <MDBox p={2}>
         <TimelineItem
           color="success"
-          icon="notifications"
+          icon="notifications"F
           title="Compra plano Standard"
           dateTime="04 JUN 11:40"
         />
