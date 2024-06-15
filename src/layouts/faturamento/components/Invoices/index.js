@@ -124,12 +124,10 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Transações do Mês', 20, 20);
 
   const transactionData = [
-    { type: 'Repasse', count: 10 },
-    { type: 'Compra Plano Standard', count: 15 },
-    { type: 'Cancelamento Plano Standard', count: 2 },
-    { type: 'Compra Plano Premium', count: 10 },
-    { type: 'Cancelamento Plano Premium', count: 1 },
-    { type: 'Imposto/Taxas', count: 5 }
+    { type: 'Compra Plano Standard', count: billingData.reduce((total, item) => total + item.total_purchase_standard, 0) },
+    { type: 'Cancelamento Plano Standard', count: billingData.reduce((total, item) => total + item.total_cancel_standard, 0) },
+    { type: 'Compra Plano Premium', count: billingData.reduce((total, item) => total + item.total_purchase_premium, 0) },
+    { type: 'Cancelamento Plano Premium', count: billingData.reduce((total, item) => total + item.total_cancel_premium, 0) },
   ];
 
   const transactionTableColumns = ['Tipo de Transação', 'Quantidade'];
