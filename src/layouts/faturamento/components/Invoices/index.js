@@ -7,30 +7,31 @@ import Envs from "components/Envs";
 import Invoice from "layouts/faturamento/components/Invoice";
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
-import Values from "components/Values"
-
+import Values from "components/Values";
 
 function drawBarChart(pdf, labels, data, x, y, width, height) {
-
   const maxData = Math.max(...data);
   const barWidth = width / data.length;
   
   for (let i = 0; i < data.length; i++) {
     const barHeight = (data[i] / maxData) * height;
     pdf.setFillColor(75, 192, 192);
-    pdf.rect(x + i * barWidth, y + height - barHeight, barWidth * 0.8, barHeight, 'F');
-    pdf.text(data[i].toString(), x + i * barWidth + barWidth * 0.4, y + height - barHeight - 5, { align: 'center' });
+    if (!isNaN(x + i * barWidth) && !isNaN(y + height - barHeight) && !isNaN(barWidth * 0.8) && !isNaN(barHeight)) {
+      pdf.rect(x + i * barWidth, y + height - barHeight, barWidth * 0.8, barHeight, 'F');
+      pdf.text(data[i].toString(), x + i * barWidth + barWidth * 0.4, y + height - barHeight - 5, { align: 'center' });
+    }
   }
 
   // Draw labels
   pdf.setFontSize(10);
   for (let i = 0; i < labels.length; i++) {
-    pdf.text(labels[i], x + i * barWidth + barWidth * 0.4, y + height + 5, { align: 'center' });
+    if (!isNaN(x + i * barWidth + barWidth * 0.4) && !isNaN(y + height + 5)) {
+      pdf.text(labels[i], x + i * barWidth + barWidth * 0.4, y + height + 5, { align: 'center' });
+    }
   }
 }
 
 async function generatePdfReport(billingData, accessData, stripeDataForMonth, monthYearString) {
-
   const amazonCost = Values.AMAZON_AWS_COST;
   const stripeGain = Values.STRIPE_GAIN;
   
@@ -50,13 +51,16 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Este relatório apresenta um resumo detalhado do desempenho financeiro da empresa, incluindo dados de faturamento, lucro e custos com serviços AWS e Stripe.', 20, 70, { maxWidth: 170 });
 
   // Faturamento
-  const totalRevenue = billingData.reduce((total, item) => total + item.total_revenue, 0);
+  const totalRevenue = billingData.reduce((total, item) => total + item.total_faturamento, 0);
   pdf.setFontSize(18);
   pdf.text('Faturamento', 20, 90);
   pdf.setFontSize(14);
   pdf.text(`O faturamento total no mês de ${monthYearString} foi de R$ ${totalRevenue.toFixed(2)}.`, 20, 100);
 
-  const revenueData = [0, 39, 12, 9, 9]; // Dados de exemplo
+  const revenueData = billingData.map(week => week.total_faturamento);
+  while (revenueData.length < 5) {
+    revenueData.push(0);
+  }
   drawBarChart(pdf, ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'], revenueData, 20, 130, 160, 80);
 
   // Lucro
@@ -64,9 +68,9 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.setFontSize(18);
   pdf.text('Lucro', 20, 20);
   pdf.setFontSize(14);
-  pdf.text(`O lucro total no mês de ${monthYearString} foi de R$ ${totalRevenue.toFixed(2) - amazonCost}.`, 20, 30);
+  pdf.text(`O lucro total no mês de ${monthYearString} foi de R$ ${(totalRevenue - amazonCost).toFixed(2)}.`, 20, 30);
 
-  const profitData = [0, 14, 4, 2, 2]; // Dados de exemplo
+  const profitData = revenueData.map((revenue) => (revenue - (revenue / totalRevenue) * amazonCost).toFixed(2)).map(Number);
   drawBarChart(pdf, ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'], profitData, 20, 50, 160, 80);
 
   // Faturamento por Plano
@@ -74,10 +78,13 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.setFontSize(18);
   pdf.text('Faturamento por Plano', 20, 20);
 
-  const planRevenueData = billingData.map(item => ({
-    plan: item.plan_name,
-    revenue: `R$ ${item.total_revenue.toFixed(2)}`
-  }));
+  const standardRevenue = billingData.reduce((total, item) => total + (9.99 * item.total_purchase_standard) - (9.99 * item.total_cancel_standard), 0);
+  const premiumRevenue = billingData.reduce((total, item) => total + (14.99 * item.total_purchase_premium) - (14.99 * item.total_cancel_premium), 0);
+
+  const planRevenueData = [
+    { plan: 'Standard', revenue: `R$ ${standardRevenue.toFixed(2)}` },
+    { plan: 'Premium', revenue: `R$ ${premiumRevenue.toFixed(2)}` }
+  ];
 
   const planRevenueTableColumns = ['Plano', 'Faturamento'];
   const planRevenueTableRows = planRevenueData.map(item => [item.plan, item.revenue]);
@@ -96,8 +103,8 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Lucro por Plano', 20, 20);
 
   const planProfitData = [
-    { plan: 'Standard', profit: 'R$ 15,90' },
-    { plan: 'Premium', profit: 'R$ 0' }
+    { plan: 'Standard', profit: `R$ ${(standardRevenue - (standardRevenue / totalRevenue) * amazonCost).toFixed(2)}` },
+    { plan: 'Premium', profit: `R$ ${(premiumRevenue - (premiumRevenue / totalRevenue) * amazonCost).toFixed(2)}` }
   ];
 
   const planProfitTableColumns = ['Plano', 'Lucro'];
@@ -276,43 +283,92 @@ function Invoices() {
     const selectedYear = selectedDate.getFullYear();
     const monthYearString = `${selectedDate.toLocaleDateString('pt-BR', { month: 'long' })} de ${selectedYear}`;
 
-    // Recupera os dados do billingCache
-    const billingCache = localStorage.getItem('billingCache');
-    let cachedData = null;
-    if (billingCache) {
-      cachedData = JSON.parse(billingCache);
+    try {
+      const response = await fetch(BACKEND_URL + '/admin/report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ month: selectedMonth }),
+      });
+
+      if (!response.ok) throw new Error('Erro ao buscar os dados do relatório.');
+
+      const reportData = await response.json();
+      const completeReportData = [];
+
+      // Preencher semanas vazias com zero
+      for (let i = 1; i <= 5; i++) {
+        const weekData = reportData.find(week => week.week_number === i) || {
+          week_number: i,
+          total_cancel_premium: 0,
+          total_cancel_standard: 0,
+          total_faturamento: 0,
+          total_purchase_premium: 0,
+          total_purchase_standard: 0,
+        };
+        completeReportData.push(weekData);
+      }
+
+      console.log('Selected Month:', selectedMonth, 'Selected Year:', selectedYear);
+      console.log('Complete Report Data:', completeReportData);
+
+      await generatePdfReport(completeReportData, null, null, monthYearString);
+    } catch (error) {
+      console.error(error);
+      // Em caso de erro, gerar relatório com os dados locais
+      const billingCache = localStorage.getItem('billingCache');
+      let cachedData = null;
+      if (billingCache) {
+        cachedData = JSON.parse(billingCache);
+      }
+
+      if (!dashboardData && !cachedData) {
+        console.log('Nenhum dado de dashboard disponível.');
+        alert('Aguarde, estou atualizando os dados');
+        return;
+      }
+
+      const dataToUse = dashboardData || cachedData;
+
+      const accessDataForMonth = (dataToUse.accessPerMonth && dataToUse.accessPerMonth.month === selectedMonth && dataToUse.accessPerMonth.year === selectedYear)
+        ? dataToUse.accessPerMonth
+        : null;
+
+      const billingDataForMonth = dataToUse.billingPerMonth ? dataToUse.billingPerMonth.filter(item => {
+        const itemMonth = Math.round(item.month);
+        const itemYear = Math.round(item.year);
+        return itemMonth === selectedMonth && itemYear === selectedYear;
+      }) : [];
+
+      const stripeDataForMonth = dataToUse.stripeData ? dataToUse.stripeData.filter(item => {
+        const itemMonth = Math.round(item.month);
+        const itemYear = Math.round(item.year);
+        return itemMonth === selectedMonth && itemYear === selectedYear;
+      }) : [];
+
+      console.log('Selected Month:', selectedMonth, 'Selected Year:', selectedYear);
+      console.log('Billing data for month:', billingDataForMonth);
+      console.log('Access data for month:', accessDataForMonth);
+      console.log('Stripe data for month:', stripeDataForMonth);
+
+      const completeReportData = [];
+
+      // Preencher semanas vazias com zero
+      for (let i = 1; i <= 5; i++) {
+        const weekData = billingDataForMonth.find(week => week.week_number === i) || {
+          week_number: i,
+          total_cancel_premium: 0,
+          total_cancel_standard: 0,
+          total_faturamento: 0,
+          total_purchase_premium: 0,
+          total_purchase_standard: 0,
+        };
+        completeReportData.push(weekData);
+      }
+
+      await generatePdfReport(completeReportData, accessDataForMonth, stripeDataForMonth, monthYearString);
     }
-
-    if (!dashboardData && !cachedData) {
-      console.log('Nenhum dado de dashboard disponível.');
-      alert('Aguarde, estou atualizando os dados');
-      return;
-    }
-
-    const dataToUse = dashboardData || cachedData;
-
-    const accessDataForMonth = (dataToUse.accessPerMonth && dataToUse.accessPerMonth.month === selectedMonth && dataToUse.accessPerMonth.year === selectedYear)
-      ? dataToUse.accessPerMonth
-      : null;
-
-    const billingDataForMonth = dataToUse.billingPerMonth ? dataToUse.billingPerMonth.filter(item => {
-      const itemMonth = Math.round(item.month);
-      const itemYear = Math.round(item.year);
-      return itemMonth === selectedMonth && itemYear === selectedYear;
-    }) : [];
-
-    const stripeDataForMonth = dataToUse.stripeData ? dataToUse.stripeData.filter(item => {
-      const itemMonth = Math.round(item.month);
-      const itemYear = Math.round(item.year);
-      return itemMonth === selectedMonth && itemYear === selectedYear;
-    }) : [];
-
-    console.log('Selected Month:', selectedMonth, 'Selected Year:', selectedYear);
-    console.log('Billing data for month:', billingDataForMonth);
-    console.log('Access data for month:', accessDataForMonth);
-    console.log('Stripe data for month:', stripeDataForMonth);
-
-    await generatePdfReport(billingDataForMonth, accessDataForMonth, stripeDataForMonth, monthYearString);
   }
 
   return (
@@ -321,9 +377,6 @@ function Invoices() {
         <MDTypography variant="h6" fontWeight="medium">
           Relatórios
         </MDTypography>
-        {/* <MDButton variant="outlined" color="info" size="small">
-          Ver todos
-        </MDButton> */}
       </MDBox>
       <MDBox p={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
