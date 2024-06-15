@@ -363,7 +363,7 @@ function ManageUsers() {
               </Select>
             </FormControl>
             <Box sx={{ mt: 2 }}>
-              <Button onClick={handleCreate} color="primary" variant="contained">
+              <Button onClick={handleCreate} color="primary" variant="contained" style={{ color: 'white' }}>
                 Criar
               </Button>
             </Box>

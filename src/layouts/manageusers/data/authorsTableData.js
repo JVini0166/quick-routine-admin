@@ -71,7 +71,7 @@ export default function AdminUsersTable() {
       { Header: "usuario", accessor: "username", width: "45%", align: "left" },
       { Header: "plano", accessor: "role", align: "left" },
       // { Header: "status", accessor: "status", align: "center" },
-      { Header: "criado em", accessor: "dateCreated", align: "center" },
+      // { Header: "criado em", accessor: "dateCreated", align: "center" },
       { Header: "ação", accessor: "action", align: "center" },
     ],
     rows: rows,
