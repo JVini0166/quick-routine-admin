@@ -62,7 +62,7 @@ function PlatformSettings() {
             </MDTypography>
           </MDBox>
         </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
+        {/* <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
             <Switch checked={mentionsMe} onChange={() => setMentionsMe(!mentionsMe)} />
           </MDBox>
@@ -71,7 +71,7 @@ function PlatformSettings() {
             Enviar e-mail quando uma nova conversa é aberta
             </MDTypography>
           </MDBox>
-        </MDBox>
+        </MDBox> */}
         <MDBox mt={3}>
           <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
             no app
@@ -88,14 +88,14 @@ function PlatformSettings() {
           </MDBox>
         </MDBox>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
+          {/* <MDBox mt={0.5}>
             <Switch checked={productUpdate} onChange={() => setProductUpdate(!productUpdate)} />
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
               Ativar modo reparo
             </MDTypography>
-          </MDBox>
+          </MDBox> */}
         </MDBox>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           {/* <MDBox mt={0.5}>
