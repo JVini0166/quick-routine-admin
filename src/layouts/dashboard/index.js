@@ -110,8 +110,8 @@ function Dashboard() {
                 count={0}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "que semana passada",
+                  amount: "",
+                  label: "Atualizado agora",
                 }}
               />
             </MDBox>
@@ -129,8 +129,8 @@ function Dashboard() {
                 }
                 percentage={{
                   color: "success",
-                  amount: "+3%",
-                  label: "que o mês passado",
+                  amount: "",
+                  label: "Atualizado agora",
                 }}
               />
             </MDBox>
@@ -146,8 +146,8 @@ function Dashboard() {
                 }
                 percentage={{
                   color: "success",
-                  amount: "+1%",
-                  label: "mais que ontem",
+                  amount: "",
+                  label: "Atualizado agora",
                 }}
               />
             </MDBox>
