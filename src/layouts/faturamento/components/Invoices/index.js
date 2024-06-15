@@ -7,8 +7,11 @@ import Envs from "components/Envs";
 import Invoice from "layouts/faturamento/components/Invoice";
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
+import Values from "components/Values"
+
 
 function drawBarChart(pdf, labels, data, x, y, width, height) {
+
   const maxData = Math.max(...data);
   const barWidth = width / data.length;
   
@@ -27,6 +30,10 @@ function drawBarChart(pdf, labels, data, x, y, width, height) {
 }
 
 async function generatePdfReport(billingData, accessData, stripeDataForMonth, monthYearString) {
+
+  const amazonCost = Values.AMAZON_AWS_COST;
+  const stripeGain = Values.STRIPE_GAIN;
+  
   console.log('Gerando relatório para:', monthYearString);
   const pdf = new jsPDF();
 
@@ -43,10 +50,11 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Este relatório apresenta um resumo detalhado do desempenho financeiro da empresa, incluindo dados de faturamento, lucro e custos com serviços AWS e Stripe.', 20, 70, { maxWidth: 170 });
 
   // Faturamento
+  const totalRevenue = billingData.reduce((total, item) => total + item.total_revenue, 0);
   pdf.setFontSize(18);
   pdf.text('Faturamento', 20, 90);
   pdf.setFontSize(14);
-  pdf.text(`O faturamento total no mês de ${monthYearString} foi de R$ 79,90.`, 20, 100);
+  pdf.text(`O faturamento total no mês de ${monthYearString} foi de R$ ${totalRevenue.toFixed(2)}.`, 20, 100);
 
   const revenueData = [0, 39, 12, 9, 9]; // Dados de exemplo
   drawBarChart(pdf, ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'], revenueData, 20, 130, 160, 80);
@@ -56,7 +64,7 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.setFontSize(18);
   pdf.text('Lucro', 20, 20);
   pdf.setFontSize(14);
-  pdf.text(`O lucro total no mês de ${monthYearString} foi de R$ 22,22.`, 20, 30);
+  pdf.text(`O lucro total no mês de ${monthYearString} foi de R$ ${totalRevenue.toFixed(2) - amazonCost}.`, 20, 30);
 
   const profitData = [0, 14, 4, 2, 2]; // Dados de exemplo
   drawBarChart(pdf, ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5'], profitData, 20, 50, 160, 80);
@@ -66,10 +74,10 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.setFontSize(18);
   pdf.text('Faturamento por Plano', 20, 20);
 
-  const planRevenueData = [
-    { plan: 'Standard', revenue: 'R$ 39,90' },
-    { plan: 'Premium', revenue: 'R$ 0' }
-  ];
+  const planRevenueData = billingData.map(item => ({
+    plan: item.plan_name,
+    revenue: `R$ ${item.total_revenue.toFixed(2)}`
+  }));
 
   const planRevenueTableColumns = ['Plano', 'Faturamento'];
   const planRevenueTableRows = planRevenueData.map(item => [item.plan, item.revenue]);
@@ -155,10 +163,10 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Fatura da AWS', 20, 20);
 
   const awsBillingData = [
-    { service: 'EC2', cost: 'R$ 45,70' },
-    { service: 'S3', cost: 'R$ 1,20' },
-    { service: 'RDS', cost: 'R$ 21,70' },
-    { service: 'Lambda', cost: 'R$ 45,70' },
+    { service: 'EC2', cost: 'R$ 2,22' },
+    { service: 'S3', cost: 'R$ 0,72' },
+    { service: 'RDS', cost: 'R$ 13,01' },
+    { service: 'Lambda', cost: 'R$ 27,41' },
     { service: 'Taxas', cost: 'R$ 0' }
   ];
 
@@ -179,7 +187,7 @@ async function generatePdfReport(billingData, accessData, stripeDataForMonth, mo
   pdf.text('Dados do Stripe', 20, 20);
 
   const stripeData = [
-    { description: 'Faturamento Total', amount: 'R$ 255,77' },
+    { description: 'Faturamento Total', amount: `R$ ${totalRevenue.toFixed(2)}` },
     { description: 'Total de Transações', amount: 100 },
     { description: 'Taxas do Stripe', amount: 'R$ 10,72' }
   ];
@@ -268,23 +276,32 @@ function Invoices() {
     const selectedYear = selectedDate.getFullYear();
     const monthYearString = `${selectedDate.toLocaleDateString('pt-BR', { month: 'long' })} de ${selectedYear}`;
 
-    if (!dashboardData) {
+    // Recupera os dados do billingCache
+    const billingCache = localStorage.getItem('billingCache');
+    let cachedData = null;
+    if (billingCache) {
+      cachedData = JSON.parse(billingCache);
+    }
+
+    if (!dashboardData && !cachedData) {
       console.log('Nenhum dado de dashboard disponível.');
       alert('Aguarde, estou atualizando os dados');
       return;
     }
 
-    const accessDataForMonth = (dashboardData.accessPerMonth && dashboardData.accessPerMonth.month === selectedMonth && dashboardData.accessPerMonth.year === selectedYear)
-      ? dashboardData.accessPerMonth
+    const dataToUse = dashboardData || cachedData;
+
+    const accessDataForMonth = (dataToUse.accessPerMonth && dataToUse.accessPerMonth.month === selectedMonth && dataToUse.accessPerMonth.year === selectedYear)
+      ? dataToUse.accessPerMonth
       : null;
 
-    const billingDataForMonth = dashboardData.billingPerMonth ? dashboardData.billingPerMonth.filter(item => {
+    const billingDataForMonth = dataToUse.billingPerMonth ? dataToUse.billingPerMonth.filter(item => {
       const itemMonth = Math.round(item.month);
       const itemYear = Math.round(item.year);
       return itemMonth === selectedMonth && itemYear === selectedYear;
     }) : [];
 
-    const stripeDataForMonth = dashboardData.stripeData ? dashboardData.stripeData.filter(item => {
+    const stripeDataForMonth = dataToUse.stripeData ? dataToUse.stripeData.filter(item => {
       const itemMonth = Math.round(item.month);
       const itemYear = Math.round(item.year);
       return itemMonth === selectedMonth && itemYear === selectedYear;

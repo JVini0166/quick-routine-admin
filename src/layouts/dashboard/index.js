@@ -114,7 +114,7 @@ function Dashboard() {
                 color="dark"
                 icon="weekend"
                 title="Ativos no momento"
-                count={0}
+                count={1}
                 percentage={{
                   color: "success",
                   amount: "",

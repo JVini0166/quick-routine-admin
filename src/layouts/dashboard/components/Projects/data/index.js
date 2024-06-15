@@ -98,7 +98,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            R$45,70
+            R$27,41
           </MDTypography>
         ),
         completion: (
@@ -119,7 +119,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            R$21,70
+            R$13,01
           </MDTypography>
         ),
         completion: (
@@ -181,7 +181,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            R$1,20
+            R$0,72
           </MDTypography>
         ),
         completion: (
@@ -202,7 +202,7 @@ export default function data() {
         ),
         budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            R$3,70
+            R$2,22
           </MDTypography>
         ),
         completion: (
