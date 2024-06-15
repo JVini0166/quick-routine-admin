@@ -59,6 +59,13 @@ function Dashboard() {
         if (!response.ok) throw new Error('A resposta não foi 200.');
         const data = await response.json();
 
+        // Armazene os dados no localStorage
+        try {
+        localStorage.setItem('billingCache', JSON.stringify(data));
+        } catch (error) {
+          console.log("Cache Error")
+        }
+
         // Mapeia os dados para as arrays de labels e data
          // Apenas a primeira letra do dia
         const datasetData = data.accessPerWeekDay.map(item => item.register_count);

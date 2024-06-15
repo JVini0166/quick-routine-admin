@@ -304,9 +304,9 @@ function Invoices() {
         <MDTypography variant="h6" fontWeight="medium">
           Relatórios
         </MDTypography>
-        <MDButton variant="outlined" color="info" size="small">
+        {/* <MDButton variant="outlined" color="info" size="small">
           Ver todos
-        </MDButton>
+        </MDButton> */}
       </MDBox>
       <MDBox p={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>

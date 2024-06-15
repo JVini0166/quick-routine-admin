@@ -107,13 +107,13 @@ function Transactions() {
             description="26 March 2020, at 08:30 AM"
             value="+ $ 2,500"
           />
-          <Transaction
+          {/* <Transaction
             color="dark"
             icon="priority_high"
             name="Webflow"
             description="26 March 2020, at 05:00 AM"
             value="Pending"
-          />
+          /> */}
         </MDBox>
       </MDBox>
     </Card>

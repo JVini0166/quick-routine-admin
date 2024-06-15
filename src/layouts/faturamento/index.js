@@ -1,38 +1,41 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
+import React, { useState, useEffect } from 'react';
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import MasterCard from "examples/Cards/MasterCard";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
-
-// Billing page components
 import PaymentMethod from "layouts/faturamento/components/PaymentMethod";
 import Invoices from "layouts/faturamento/components/Invoices";
 import BillingInformation from "layouts/faturamento/components/BillingInformation";
 import Transactions from "layouts/faturamento/components/Transactions";
+import Values from "components/Values";
 
 function Billing() {
+  const [monthBilling, setMonthBilling] = useState(0);
+  const [profit, setProfit] = useState(0);
+  const amazonCost = Values.AMAZON_AWS_COST;
+  const stripeGain = Values.STRIPE_GAIN;
+
+  useEffect(() => {
+    const billingCache = localStorage.getItem('billingCache');
+    if (billingCache) {
+      const data = JSON.parse(billingCache);
+      if (data && data.monthBilling) {
+        setMonthBilling(data.monthBilling);
+      } else {
+        setMonthBilling(stripeGain);
+      }
+    } else {
+      setMonthBilling(stripeGain);
+    }
+  }, [stripeGain]);
+
+  useEffect(() => {
+    setProfit((monthBilling - amazonCost).toFixed(2));
+  }, [monthBilling, amazonCost]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar absolute isMini />
@@ -49,7 +52,7 @@ function Billing() {
                     icon="account_balance"
                     title="faturamento"
                     description="Receitas geradas ao total"
-                    value="R$ 255.77"
+                    value={`R$ ${monthBilling}`}
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
@@ -57,7 +60,7 @@ function Billing() {
                     icon="account_balance"
                     title="lucro"
                     description="Líquido ao final"
-                    value="R$ 12.00"
+                    value={`R$ ${profit}`}
                   />
                 </Grid>
                 <Grid item xs={12}>

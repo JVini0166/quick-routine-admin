@@ -25,8 +25,29 @@ import MDTypography from "components/MDTypography";
 
 // Billing page components
 import Transaction from "layouts/faturamento/components/Transaction";
+import Values from "components/Values"
+import React, { useEffect, useState } from 'react';
 
 function Transactions() {
+
+  const [monthBilling, setMonthBilling] = useState(0);
+  const amazonCost = parseFloat(Values.AMAZON_AWS_COST);
+  const stripeGain = parseFloat(Values.STRIPE_GAIN);
+
+  useEffect(() => {
+    const billingCache = localStorage.getItem('billingCache');
+    if (billingCache) {
+      const data = JSON.parse(billingCache);
+      if (data && typeof data.monthBilling === 'number') {
+        setMonthBilling(data.monthBilling);
+      } else {
+        setMonthBilling(stripeGain);
+      }
+    } else {
+      setMonthBilling(stripeGain);
+    }
+  }, [stripeGain]);
+
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
@@ -63,19 +84,19 @@ function Transactions() {
             icon="expand_more"
             name="Amazon AWS"
             description="04 Jun 2024"
-            value="- R$ 204,32"
+            value={"- R$ " + amazonCost.toFixed(2)}
           />
           <Transaction
             color="success"
             icon="expand_less"
             name="Stripe"
             description="04 Jun 2024"
-            value="+ R$ 29.98"
+            value={`+ R$ ${parseFloat(monthBilling).toFixed(2)}`}
           />
         </MDBox>
         <MDBox mt={1} mb={2}>
           <MDTypography variant="caption" color="text" fontWeight="bold" textTransform="uppercase">
-            Ontem
+            ANTERIORES
           </MDTypography>
         </MDBox>
         <MDBox
@@ -104,16 +125,16 @@ function Transactions() {
             color="success"
             icon="expand_less"
             name="Boleto"
-            description="26 March 2020, at 08:30 AM"
+            description="04 Jun 2024"
             value="+ R$ 0"
           />
-          <Transaction
+          {/* <Transaction
             color="dark"
             icon="priority_high"
             name="Webflow"
             description="26 March 2020, at 05:00 AM"
             value="Pending"
-          />
+          /> */}
         </MDBox>
       </MDBox>
     </Card>
