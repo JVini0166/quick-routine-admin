@@ -200,7 +200,7 @@ function Dashboard() {
                   title="Faturamento aos meses"
                   description={
                     <>
-                      (<strong>+15%</strong>) de aumento de conversões.
+                      Faturamento ao longo dos meses
                     </>
                   }
                   date="atualizado agora"
