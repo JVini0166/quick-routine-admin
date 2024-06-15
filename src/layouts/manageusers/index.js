@@ -282,7 +282,7 @@ function ManageUsers() {
               </Select>
             </FormControl>
             <Box sx={{ mt: 2 }}>
-              <Button onClick={handleUpdate} color="primary" variant="contained">
+              <Button onClick={handleUpdate} color="primary" variant="contained" style={{ color: 'white' }}>
                 Atualizar
               </Button>
               <Button onClick={handleDelete} color="error" variant="contained" sx={{ ml: 2 }}>
