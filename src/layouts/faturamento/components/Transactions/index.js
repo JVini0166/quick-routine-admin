@@ -83,14 +83,14 @@ function Transactions() {
             color="error"
             icon="expand_more"
             name="Amazon AWS"
-            description="04 Jun 2024"
+            description="18 Jun 2024"
             value={"- R$ " + amazonCost.toFixed(2)}
           />
           <Transaction
             color="success"
             icon="expand_less"
             name="Stripe"
-            description="04 Jun 2024"
+            description="18 Jun 2024"
             value={`+ R$ ${parseFloat(monthBilling).toFixed(2)}`}
           />
         </MDBox>

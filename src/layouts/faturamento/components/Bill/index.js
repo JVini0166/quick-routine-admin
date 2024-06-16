@@ -184,7 +184,7 @@ function Bill({ noGutter }) {
             value={currentPlan.price || ''}
             onChange={(e) => setCurrentPlan({ ...currentPlan, price: e.target.value })}
           />
-          <Button variant="contained" color="primary" onClick={updatePlan}>
+          <Button variant="contained" color="primary" onClick={updatePlan} style={{ color: 'white' }}>
             Atualizar
           </Button>
         </Box>
