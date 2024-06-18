@@ -101,7 +101,7 @@ function Basic() {
             Entrar
           </MDTypography>
           <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <FacebookIcon color="inherit" />
               </MDTypography>
@@ -115,7 +115,7 @@ function Basic() {
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <GoogleIcon color="inherit" />
               </MDTypography>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -144,7 +144,7 @@ function Basic() {
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
+              {/* <MDTypography variant="button" color="text">
                 Don&apos;t have an account?{" "}
                 <MDTypography
                   component={Link}
@@ -156,7 +156,7 @@ function Basic() {
                 >
                   Sign up
                 </MDTypography>
-              </MDTypography>
+              </MDTypography> */}
             </MDBox>
           </MDBox>
         </MDBox>
